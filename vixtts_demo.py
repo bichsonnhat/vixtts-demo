@@ -356,12 +356,12 @@ if __name__ == "__main__":
             "ja",
         ],
     )
-    ref_audio = gr.Audio(
+    speaker_reference_audio = gr.Audio(
         label="Speaker reference audio:",
         value=args.audio,
         type="filepath",    
     )
-    run_tts(tts_language, tts_text=args.text, speaker_reference_audio=ref_audio, use_filter=True, normalize_text=True)
+    run_tts(tts_language, tts_text=args.text, speaker_audio_file=speaker_reference_audio, use_filter=True, normalize_text=True)
 
     # with gr.Blocks() as demo:
     #     intro = """
