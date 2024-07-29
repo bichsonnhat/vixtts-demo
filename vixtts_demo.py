@@ -275,7 +275,7 @@ def run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normalize_text):
     # out_path = os.path.join(OUTPUT_DIR, f"{get_file_name(tts_text)}_{gr_audio_id}.wav")
     print("Saving output to ", out_path)
     torchaudio.save(out_path, out_wav, 24000)
-
+    sys.exit(0)
     return "Speech generated !", out_path
 
 
