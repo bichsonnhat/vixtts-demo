@@ -361,6 +361,15 @@ if __name__ == "__main__":
         value=args.audio,
         type="filepath",    
     )
+    use_filter = gr.Checkbox(
+        label="Denoise Reference Audio",
+        value=True,
+    )
+
+    normalize_text = gr.Checkbox(
+        label="Normalize Input Text",
+        value=True,
+    )
     run_tts(tts_language, tts_text=args.text, speaker_audio_file=speaker_reference_audio, use_filter=True, normalize_text=True)
 
     # with gr.Blocks() as demo:
