@@ -79,7 +79,7 @@ def load_and_run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normali
     required_files = ["model.pth", "config.json", "vocab.json", "speakers_xtts.pth"]
     files_in_dir = os.listdir(checkpoint_dir)
     if not all(file in files_in_dir for file in required_files):
-        yield f"Missing model files! Downloading from {repo_id}..."
+        # yield f"Missing model files! Downloading from {repo_id}..."
         snapshot_download(
             repo_id=repo_id,
             repo_type="model",
@@ -90,13 +90,13 @@ def load_and_run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normali
             filename="speakers_xtts.pth",
             local_dir=checkpoint_dir,
         )
-        yield f"Model download finished..."
+        # yield f"Model download finished..."
 
     xtts_config = os.path.join(checkpoint_dir, "config.json")
     config = XttsConfig()
     config.load_json(xtts_config)
     XTTS_MODEL = Xtts.init_from_config(config)
-    yield "Loading model..."
+    # yield "Loading model..."
     XTTS_MODEL.load_checkpoint(
         config, checkpoint_dir=checkpoint_dir, use_deepspeed=use_deepspeed
     )
@@ -104,8 +104,8 @@ def load_and_run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normali
         XTTS_MODEL.cuda()
 
     print("Model Loaded!")
-    yield "Model Loaded!"
-    run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normalize_text)
+    # yield "Model Loaded!"
+    return run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normalize_text)
 
 # Define dictionaries to store cached results
 cache_queue = []
