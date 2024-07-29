@@ -30,7 +30,8 @@ FILTER_SUFFIX = "_DeepFilterNet3.wav"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def close_program():
-    print("Closing the demo...")
+    if progress_gen.text == "Speech generated !":
+        print("Closing the demo...")
 
 
 def clear_gpu_cache():
@@ -516,7 +517,7 @@ if __name__ == "__main__":
         )
         progress_gen.change(
             close_program,
-            inputs=[],
+            inputs=[progress_gen],
             outputs=[]
         )
 
