@@ -428,14 +428,14 @@ if __name__ == "__main__":
         label="Input Text.",
         value=args.text,
     )
-    progress_gen = gr.Label(label="Progress:")
-    tts_output_audio = gr.Audio(label="Generated Audio.")
+    # progress_gen = gr.Label(label="Progress:")
+    # tts_output_audio = gr.Audio(label="Generated Audio.")
     progress_gen, tts_output_audio = load_and_run_tts(
-        tts_language,
-        tts_text,
-        speaker_reference_audio,
-        use_filter,
-        normalize_text,
+        "vi",
+        args.text,
+        args.audio,
+        True,
+        True,
         MODEL_DIR,
         "capleaf/viXTTS",
         False,
