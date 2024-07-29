@@ -332,7 +332,20 @@ if __name__ == "__main__":
     if args.reference_audio:
         REFERENCE_AUDIO = os.abspath(args.reference_audio)
 
-    load_model(checkpoint_dir=args.model_dir, repo_id="capleaf/viXTTS", use_deepspeed=False)
+    repo_id = gr.Textbox(
+        label="HuggingFace Repo ID",
+        value="capleaf/viXTTS",
+    )
+    checkpoint_dir = gr.Textbox(
+        label="viXTTS model directory",
+        value=MODEL_DIR,
+    )
+
+    use_deepspeed = gr.Checkbox(
+        value=True, label="Use DeepSpeed for faster inference"
+    )
+
+    load_model(checkpoint_dir, repo_id, use_deepspeed=False)
     tts_language = gr.Dropdown(
         label="Language",
         value="vi",
