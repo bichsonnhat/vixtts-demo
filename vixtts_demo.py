@@ -370,7 +370,7 @@ if __name__ == "__main__":
         label="Normalize Input Text",
         value=True,
     )
-    run_tts(tts_language, tts_text=args.text, speaker_audio_file=speaker_reference_audio, use_filter=True, normalize_text=True)
+    run_tts(tts_language, tts_text=args.text, speaker_audio_file=speaker_reference_audio, use_deepfilter=use_filter, normalize_text=normalize_text)
 
     # with gr.Blocks() as demo:
     #     intro = """
