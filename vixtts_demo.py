@@ -333,7 +333,30 @@ if __name__ == "__main__":
         REFERENCE_AUDIO = os.abspath(args.reference_audio)
 
     load_model(checkpoint_dir=args.model_dir, repo_id="capleaf/viXTTS", use_deepspeed=False)
-    run_tts(tts_language="vi", tts_text=args.text, speaker_reference_audio=args.audio, use_filter=True, normalize_text=True)
+    tts_language = gr.Dropdown(
+        label="Language",
+        value="vi",
+        choices=[
+            "vi",
+            "en",
+            "es",
+            "fr",
+            "de",
+            "it",
+            "pt",
+            "pl",
+            "tr",
+            "ru",
+            "nl",
+            "cs",
+            "ar",
+            "zh",
+            "hu",
+            "ko",
+            "ja",
+        ],
+    )
+    run_tts(tts_language, tts_text=args.text, speaker_reference_audio=args.audio, use_filter=True, normalize_text=True)
 
     # with gr.Blocks() as demo:
     #     intro = """
