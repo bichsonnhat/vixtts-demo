@@ -30,7 +30,7 @@ FILTER_SUFFIX = "_DeepFilterNet3.wav"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def close_program(progress_gen):
-    if progress_gen.text == "Speech generated !":
+    if progress_gen == "Speech generated !":
         print("Closing the demo...")
 
 
