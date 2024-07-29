@@ -371,190 +371,207 @@ if __name__ == "__main__":
     if args.reference_audio:
         REFERENCE_AUDIO = os.abspath(args.reference_audio)
 
-    # repo_id = gr.Textbox(
-    #     label="HuggingFace Repo ID",
-    #     value="capleaf/viXTTS",
-    # )
-    # checkpoint_dir = gr.Textbox(
-    #     label="viXTTS model directory",
-    #     value=MODEL_DIR,
-    # )
+    repo_id = gr.Textbox(
+        label="HuggingFace Repo ID",
+        value="capleaf/viXTTS",
+    )
+    checkpoint_dir = gr.Textbox(
+        label="viXTTS model directory",
+        value=MODEL_DIR,
+    )
 
-    # use_deepspeed = gr.Checkbox(
-    #     value=True, label="Use DeepSpeed for faster inference"
-    # )
+    use_deepspeed = gr.Checkbox(
+        value=False, label="Use DeepSpeed for faster inference"
+    )
 
-    # load_model(checkpoint_dir, repo_id, use_deepspeed)
-    # tts_language = gr.Dropdown(
-    #     label="Language",
-    #     value="vi",
-    #     choices=[
-    #         "vi",
-    #         "en",
-    #         "es",
-    #         "fr",
-    #         "de",
-    #         "it",
-    #         "pt",
-    #         "pl",
-    #         "tr",
-    #         "ru",
-    #         "nl",
-    #         "cs",
-    #         "ar",
-    #         "zh",
-    #         "hu",
-    #         "ko",
-    #         "ja",
-    #     ],
-    # )
-    # speaker_reference_audio = gr.Audio(
-    #     label="Speaker reference audio:",
-    #     value=args.audio,
-    #     type="filepath",    
-    # )
-    # use_filter = gr.Checkbox(
-    #     label="Denoise Reference Audio",
-    #     value=True,
-    # )
+    speaker_reference_audio = gr.Audio(
+        label="Speaker reference audio:",
+        value=args.audio,
+        type="filepath",    
+    )
 
-    # normalize_text = gr.Checkbox(
-    #     label="Normalize Input Text",
-    #     value=True,
-    # )
-    # run_tts(tts_language, tts_text=args.text, speaker_audio_file=speaker_reference_audio, use_deepfilter=use_filter, normalize_text=normalize_text)
+    tts_language = gr.Dropdown(
+        label="Language",
+        value="vi",
+        choices=[
+            "vi",
+            "en",
+            "es",
+            "fr",
+            "de",
+            "it",
+            "pt",
+            "pl",
+            "tr",
+            "ru",
+            "nl",
+            "cs",
+            "ar",
+            "zh",
+            "hu",
+            "ko",
+            "ja",
+        ],
+    )
 
-    with gr.Blocks() as demo:
-        intro = """
-        # viXTTS Inference Demo
-        Visit viXTTS on HuggingFace: [viXTTS](https://huggingface.co/capleaf/viXTTS)
-        """
-        gr.Markdown(intro)
-        with gr.Row():
-            with gr.Column() as col1:
-                repo_id = gr.Textbox(
-                    label="HuggingFace Repo ID",
-                    value="capleaf/viXTTS",
-                )
-                checkpoint_dir = gr.Textbox(
-                    label="viXTTS model directory",
-                    value=MODEL_DIR,
-                )
+    use_filter = gr.Checkbox(
+        label="Denoise Reference Audio",
+        value=True,
+    )
 
-                use_deepspeed = gr.Checkbox(
-                    value=False, label="Use DeepSpeed for faster inference"
-                )
+    normalize_text = gr.Checkbox(
+        label="Normalize Input Text",
+        value=True,
+    )
 
-                progress_load = gr.Label(label="Progress:")
-                load_btn = gr.Button(
-                    value="Step 1 - Load viXTTS model", variant="primary"
-                )
+    tts_text = gr.Textbox(
+        label="Input Text.",
+        value=args.text,
+    )
+    progress_gen = gr.Label(label="Progress:")
+    tts_output_audio = gr.Audio(label="Generated Audio.")
+    progress_gen, tts_output_audio = load_and_run_tts(
+        tts_language,
+        tts_text,
+        speaker_reference_audio,
+        use_filter,
+        normalize_text,
+        checkpoint_dir,
+        repo_id,
+        use_deepspeed,
+    )
 
-            with gr.Column() as col2:
-                speaker_reference_audio = gr.Audio(
-                    label="Speaker reference audio:",
-                    value=args.audio,
-                    type="filepath",    
-                )
+    # with gr.Blocks() as demo:
+    #     intro = """
+    #     # viXTTS Inference Demo
+    #     Visit viXTTS on HuggingFace: [viXTTS](https://huggingface.co/capleaf/viXTTS)
+    #     """
+    #     gr.Markdown(intro)
+    #     with gr.Row():
+    #         with gr.Column() as col1:
+    #             repo_id = gr.Textbox(
+    #                 label="HuggingFace Repo ID",
+    #                 value="capleaf/viXTTS",
+    #             )
+    #             checkpoint_dir = gr.Textbox(
+    #                 label="viXTTS model directory",
+    #                 value=MODEL_DIR,
+    #             )
 
-                tts_language = gr.Dropdown(
-                    label="Language",
-                    value="vi",
-                    choices=[
-                        "vi",
-                        "en",
-                        "es",
-                        "fr",
-                        "de",
-                        "it",
-                        "pt",
-                        "pl",
-                        "tr",
-                        "ru",
-                        "nl",
-                        "cs",
-                        "ar",
-                        "zh",
-                        "hu",
-                        "ko",
-                        "ja",
-                    ],
-                )
+    #             use_deepspeed = gr.Checkbox(
+    #                 value=False, label="Use DeepSpeed for faster inference"
+    #             )
 
-                use_filter = gr.Checkbox(
-                    label="Denoise Reference Audio",
-                    value=True,
-                )
+    #             progress_load = gr.Label(label="Progress:")
+    #             load_btn = gr.Button(
+    #                 value="Step 1 - Load viXTTS model", variant="primary"
+    #             )
 
-                normalize_text = gr.Checkbox(
-                    label="Normalize Input Text",
-                    value=True,
-                )
+    #         with gr.Column() as col2:
+    #             speaker_reference_audio = gr.Audio(
+    #                 label="Speaker reference audio:",
+    #                 value=args.audio,
+    #                 type="filepath",    
+    #             )
 
-                tts_text = gr.Textbox(
-                    label="Input Text.",
-                    value=args.text,
-                )
-                tts_btn = gr.Button(value="Step 2 - Inference", variant="primary")
+    #             tts_language = gr.Dropdown(
+    #                 label="Language",
+    #                 value="vi",
+    #                 choices=[
+    #                     "vi",
+    #                     "en",
+    #                     "es",
+    #                     "fr",
+    #                     "de",
+    #                     "it",
+    #                     "pt",
+    #                     "pl",
+    #                     "tr",
+    #                     "ru",
+    #                     "nl",
+    #                     "cs",
+    #                     "ar",
+    #                     "zh",
+    #                     "hu",
+    #                     "ko",
+    #                     "ja",
+    #                 ],
+    #             )
 
-            with gr.Column() as col3:
-                progress_gen = gr.Label(label="Progress:")
-                tts_output_audio = gr.Audio(label="Generated Audio.")
+    #             use_filter = gr.Checkbox(
+    #                 label="Denoise Reference Audio",
+    #                 value=True,
+    #             )
 
-        demo.load(
-            fn=load_and_run_tts,
-            inputs=[
-                tts_language,
-                tts_text,
-                speaker_reference_audio,
-                use_filter,
-                normalize_text,
-                checkpoint_dir,
-                repo_id,
-                use_deepspeed,
-            ],
-            outputs=[progress_gen, tts_output_audio],
-        )
-        progress_gen.change(
-            close_program,
-            inputs=[progress_gen],
-            outputs=[]
-        )
+    #             normalize_text = gr.Checkbox(
+    #                 label="Normalize Input Text",
+    #                 value=True,
+    #             )
 
-        # demo.load(
-        #     fn=load_model,
-        #     inputs=[checkpoint_dir, repo_id, use_deepspeed],
-        #     outputs=[progress_load],
-        # )
+    #             tts_text = gr.Textbox(
+    #                 label="Input Text.",
+    #                 value=args.text,
+    #             )
+    #             tts_btn = gr.Button(value="Step 2 - Inference", variant="primary")
 
-        # demo.load(
-        #     fn=run_tts,
-        #     inputs=[
-        #         tts_language,
-        #         tts_text,
-        #         speaker_reference_audio,
-        #         use_filter,
-        #         normalize_text,
-        #     ],
-        #     outputs=[progress_gen, tts_output_audio],
-        # )
+    #         with gr.Column() as col3:
+    #             progress_gen = gr.Label(label="Progress:")
+    #             tts_output_audio = gr.Audio(label="Generated Audio.")
 
-        load_btn.click(
-            fn=load_model,
-            inputs=[checkpoint_dir, repo_id, use_deepspeed],
-            outputs=[progress_load],
-        )
+    #     demo.load(
+    #         fn=load_and_run_tts,
+    #         inputs=[
+    #             tts_language,
+    #             tts_text,
+    #             speaker_reference_audio,
+    #             use_filter,
+    #             normalize_text,
+    #             checkpoint_dir,
+    #             repo_id,
+    #             use_deepspeed,
+    #         ],
+    #         outputs=[progress_gen, tts_output_audio],
+    #     )
+    #     progress_gen.change(
+    #         close_program,
+    #         inputs=[progress_gen],
+    #         outputs=[]
+    #     )
 
-        tts_btn.click(
-            fn=run_tts,
-            inputs=[
-                tts_language,
-                tts_text,
-                speaker_reference_audio,
-                use_filter,
-                normalize_text,
-            ],
-            outputs=[progress_gen, tts_output_audio],
-        )
+    #     # demo.load(
+    #     #     fn=load_model,
+    #     #     inputs=[checkpoint_dir, repo_id, use_deepspeed],
+    #     #     outputs=[progress_load],
+    #     # )
 
-    demo.launch(share=True, debug=False, server_port=args.port, server_name="0.0.0.0")
+    #     # demo.load(
+    #     #     fn=run_tts,
+    #     #     inputs=[
+    #     #         tts_language,
+    #     #         tts_text,
+    #     #         speaker_reference_audio,
+    #     #         use_filter,
+    #     #         normalize_text,
+    #     #     ],
+    #     #     outputs=[progress_gen, tts_output_audio],
+    #     # )
+
+    #     load_btn.click(
+    #         fn=load_model,
+    #         inputs=[checkpoint_dir, repo_id, use_deepspeed],
+    #         outputs=[progress_load],
+    #     )
+
+    #     tts_btn.click(
+    #         fn=run_tts,
+    #         inputs=[
+    #             tts_language,
+    #             tts_text,
+    #             speaker_reference_audio,
+    #             use_filter,
+    #             normalize_text,
+    #         ],
+    #         outputs=[progress_gen, tts_output_audio],
+    #     )
+
+    # demo.launch(share=True, debug=False, server_port=args.port, server_name="0.0.0.0")
