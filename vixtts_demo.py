@@ -29,7 +29,7 @@ OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
 FILTER_SUFFIX = "_DeepFilterNet3.wav"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def close_program():
+def close_program(progress_gen):
     if progress_gen.text == "Speech generated !":
         print("Closing the demo...")
 
