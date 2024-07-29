@@ -29,6 +29,9 @@ OUTPUT_DIR = os.path.join(SCRIPT_DIR, "output")
 FILTER_SUFFIX = "_DeepFilterNet3.wav"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+def close_program():
+    print("Closing the demo...")
+
 
 def clear_gpu_cache():
     if torch.cuda.is_available():
@@ -511,7 +514,11 @@ if __name__ == "__main__":
             ],
             outputs=[progress_gen, tts_output_audio],
         )
-        
+        progress_gen.change(
+            close_program,
+            inputs=[],
+            outputs=[]
+        )
 
         # demo.load(
         #     fn=load_model,
