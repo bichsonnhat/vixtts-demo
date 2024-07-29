@@ -235,7 +235,8 @@ def run_tts(lang, tts_text, speaker_audio_file, use_deepfilter, normalize_text):
 
     out_wav = torch.cat(wav_chunks, dim=0).unsqueeze(0)
     gr_audio_id = os.path.basename(os.path.dirname(speaker_audio_file))
-    out_path = os.path.join(OUTPUT_DIR, f"{get_file_name(tts_text)}_{gr_audio_id}.wav")
+    out_path = args.output
+    # out_path = os.path.join(OUTPUT_DIR, f"{get_file_name(tts_text)}_{gr_audio_id}.wav")
     print("Saving output to ", out_path)
     torchaudio.save(out_path, out_wav, 24000)
 
