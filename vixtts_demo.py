@@ -403,7 +403,7 @@ if __name__ == "__main__":
                 )
 
                 use_deepspeed = gr.Checkbox(
-                    value=True, label="Use DeepSpeed for faster inference"
+                    value=False, label="Use DeepSpeed for faster inference"
                 )
 
                 progress_load = gr.Label(label="Progress:")
@@ -414,7 +414,7 @@ if __name__ == "__main__":
             with gr.Column() as col2:
                 speaker_reference_audio = gr.Audio(
                     label="Speaker reference audio:",
-                    value=REFERENCE_AUDIO,
+                    value=args.audio,
                     type="filepath",    
                 )
 
@@ -454,7 +454,7 @@ if __name__ == "__main__":
 
                 tts_text = gr.Textbox(
                     label="Input Text.",
-                    value="Xin chào, tôi là một công cụ chuyển đổi văn bản thành giọng nói tiếng Việt được phát triển bởi nhóm Nón lá.",
+                    value=args.text,
                 )
                 tts_btn = gr.Button(value="Step 2 - Inference", variant="primary")
 
@@ -466,6 +466,18 @@ if __name__ == "__main__":
             fn=load_model,
             inputs=[checkpoint_dir, repo_id, use_deepspeed],
             outputs=[progress_load],
+        )
+
+        demo.load(
+            fn=run_tts,
+            inputs=[
+                tts_language,
+                tts_text,
+                speaker_reference_audio,
+                use_filter,
+                normalize_text,
+            ],
+            outputs=[progress_gen, tts_output_audio],
         )
 
         load_btn.click(
