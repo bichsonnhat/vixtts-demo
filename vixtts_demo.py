@@ -285,6 +285,24 @@ if __name__ == "__main__":
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
+        "--audio", 
+        required=True, 
+        help="Path to reference audio"
+    )
+    
+    parser.add_argument(
+        "--text", 
+        required=True, 
+        help="Text to synthesize"
+    )
+
+    parser.add_argument(
+        "--output", 
+        required=True, 
+        help="Output file path"
+    )
+
+    parser.add_argument(
         "--port",
         type=int,
         help="Port to run the gradio demo. Default: 5003",
@@ -313,99 +331,102 @@ if __name__ == "__main__":
     if args.reference_audio:
         REFERENCE_AUDIO = os.abspath(args.reference_audio)
 
-    with gr.Blocks() as demo:
-        intro = """
-        # viXTTS Inference Demo
-        Visit viXTTS on HuggingFace: [viXTTS](https://huggingface.co/capleaf/viXTTS)
-        """
-        gr.Markdown(intro)
-        with gr.Row():
-            with gr.Column() as col1:
-                repo_id = gr.Textbox(
-                    label="HuggingFace Repo ID",
-                    value="capleaf/viXTTS",
-                )
-                checkpoint_dir = gr.Textbox(
-                    label="viXTTS model directory",
-                    value=MODEL_DIR,
-                )
+    load_model(checkpoint_dir=args.model_dir, repo_id="capleaf/viXTTS", use_deepspeed=False)
+    run_tts(tts_language="vi", tts_text=args.text, speaker_reference_audio=args.audio, use_filter=True, normalize_text=True)
 
-                use_deepspeed = gr.Checkbox(
-                    value=True, label="Use DeepSpeed for faster inference"
-                )
+    # with gr.Blocks() as demo:
+    #     intro = """
+    #     # viXTTS Inference Demo
+    #     Visit viXTTS on HuggingFace: [viXTTS](https://huggingface.co/capleaf/viXTTS)
+    #     """
+    #     gr.Markdown(intro)
+    #     with gr.Row():
+    #         with gr.Column() as col1:
+    #             repo_id = gr.Textbox(
+    #                 label="HuggingFace Repo ID",
+    #                 value="capleaf/viXTTS",
+    #             )
+    #             checkpoint_dir = gr.Textbox(
+    #                 label="viXTTS model directory",
+    #                 value=MODEL_DIR,
+    #             )
 
-                progress_load = gr.Label(label="Progress:")
-                load_btn = gr.Button(
-                    value="Step 1 - Load viXTTS model", variant="primary"
-                )
+    #             use_deepspeed = gr.Checkbox(
+    #                 value=True, label="Use DeepSpeed for faster inference"
+    #             )
 
-            with gr.Column() as col2:
-                speaker_reference_audio = gr.Audio(
-                    label="Speaker reference audio:",
-                    value=REFERENCE_AUDIO,
-                    type="filepath",
-                )
+    #             progress_load = gr.Label(label="Progress:")
+    #             load_btn = gr.Button(
+    #                 value="Step 1 - Load viXTTS model", variant="primary"
+    #             )
 
-                tts_language = gr.Dropdown(
-                    label="Language",
-                    value="vi",
-                    choices=[
-                        "vi",
-                        "en",
-                        "es",
-                        "fr",
-                        "de",
-                        "it",
-                        "pt",
-                        "pl",
-                        "tr",
-                        "ru",
-                        "nl",
-                        "cs",
-                        "ar",
-                        "zh",
-                        "hu",
-                        "ko",
-                        "ja",
-                    ],
-                )
+    #         with gr.Column() as col2:
+    #             speaker_reference_audio = gr.Audio(
+    #                 label="Speaker reference audio:",
+    #                 value=REFERENCE_AUDIO,
+    #                 type="filepath",    
+    #             )
 
-                use_filter = gr.Checkbox(
-                    label="Denoise Reference Audio",
-                    value=True,
-                )
+    #             tts_language = gr.Dropdown(
+    #                 label="Language",
+    #                 value="vi",
+    #                 choices=[
+    #                     "vi",
+    #                     "en",
+    #                     "es",
+    #                     "fr",
+    #                     "de",
+    #                     "it",
+    #                     "pt",
+    #                     "pl",
+    #                     "tr",
+    #                     "ru",
+    #                     "nl",
+    #                     "cs",
+    #                     "ar",
+    #                     "zh",
+    #                     "hu",
+    #                     "ko",
+    #                     "ja",
+    #                 ],
+    #             )
 
-                normalize_text = gr.Checkbox(
-                    label="Normalize Input Text",
-                    value=True,
-                )
+    #             use_filter = gr.Checkbox(
+    #                 label="Denoise Reference Audio",
+    #                 value=True,
+    #             )
 
-                tts_text = gr.Textbox(
-                    label="Input Text.",
-                    value="Xin chào, tôi là một công cụ chuyển đổi văn bản thành giọng nói tiếng Việt được phát triển bởi nhóm Nón lá.",
-                )
-                tts_btn = gr.Button(value="Step 2 - Inference", variant="primary")
+    #             normalize_text = gr.Checkbox(
+    #                 label="Normalize Input Text",
+    #                 value=True,
+    #             )
 
-            with gr.Column() as col3:
-                progress_gen = gr.Label(label="Progress:")
-                tts_output_audio = gr.Audio(label="Generated Audio.")
+    #             tts_text = gr.Textbox(
+    #                 label="Input Text.",
+    #                 value="Xin chào, tôi là một công cụ chuyển đổi văn bản thành giọng nói tiếng Việt được phát triển bởi nhóm Nón lá.",
+    #             )
+    #             tts_btn = gr.Button(value="Step 2 - Inference", variant="primary")
 
-        load_btn.click(
-            fn=load_model,
-            inputs=[checkpoint_dir, repo_id, use_deepspeed],
-            outputs=[progress_load],
-        )
+    #         with gr.Column() as col3:
+    #             progress_gen = gr.Label(label="Progress:")
+    #             tts_output_audio = gr.Audio(label="Generated Audio.")
 
-        tts_btn.click(
-            fn=run_tts,
-            inputs=[
-                tts_language,
-                tts_text,
-                speaker_reference_audio,
-                use_filter,
-                normalize_text,
-            ],
-            outputs=[progress_gen, tts_output_audio],
-        )
+    #     load_btn.click(
+    #         fn=load_model,
+    #         inputs=[checkpoint_dir, repo_id, use_deepspeed],
+    #         outputs=[progress_load],
+    #     )
 
-    demo.launch(share=True, debug=False, server_port=args.port, server_name="0.0.0.0")
+    #     tts_btn.click(
+    #         fn=run_tts,
+    #         inputs=[
+    #             tts_language,
+    #             tts_text,
+    #             speaker_reference_audio,
+    #             use_filter,
+    #             normalize_text,
+    #         ],
+    #         outputs=[progress_gen, tts_output_audio],
+    #     )
+
+    # demo.launch(share=True, debug=False, server_port=args.port, server_name="0.0.0.0")
