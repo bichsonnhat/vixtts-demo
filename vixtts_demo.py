@@ -436,9 +436,9 @@ if __name__ == "__main__":
         speaker_reference_audio,
         use_filter,
         normalize_text,
-        checkpoint_dir,
-        repo_id,
-        use_deepspeed,
+        MODEL_DIR,
+        "capleaf/viXTTS",
+        False,
     )
 
     # with gr.Blocks() as demo:
